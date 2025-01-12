@@ -35,7 +35,7 @@ pip install mysql-connector-python
 pip install pymysql
 
 
-cd C:\Users\Asier\Downloads\Deusto scooters
+cd C:\Users\Asier\Downloads\Deusto scooters\Desarrollo-avanzado-de-aplicaciones-para-la-Web-de-Datos
 
 npm install async-retry
 npm install
@@ -55,10 +55,6 @@ docker-compose down --volumes
 docker network ls
 
 sudo systemctl restart docker
-
-
-
-
 
 docker-compose up --build
 
