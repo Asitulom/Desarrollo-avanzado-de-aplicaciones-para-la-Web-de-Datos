@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de productos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .form-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #ffffff;
+            max-width: 400px;  /* Limitar el ancho máximo */
+            margin: 20px auto;
+            padding-bottom: 40px; /* Espacio adicional en la parte inferior */
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        li h3 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        li p {
+            font-size: 1.1em;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            width: 100%;  /* Hacer que el botón ocupe todo el ancho */
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .product-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .product-actions button {
+            background-color: #45a049;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .product-actions button:hover {
+            background-color: #388e3c;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado -->
+    <header>
+        <h1>Deusto Scooters</h1>
+    </header>
+
+    <!-- Barra de navegación -->
+    <nav>
+        <a href="/static/index.html">Inicio</a>
+        <a href="/static/productos.html">Catálogo</a>
+        <a href="/static/pedidos.html">Mis Pedidos</a>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <h2>Gestiona tu catálogo de productos</h2>
+
+        <ul id="productList">
+            <!-- Los productos se listarán aquí -->
+        </ul>
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2025 Deusto Scooters | Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        const PREFIX_URL = window.location.protocol + "//" + window.location.host;
+        const API_URL = PREFIX_URL + '/products/';
+
+        function listProducts() {
+            fetch(API_URL)
+            .then(response => response.json())
+            .then(products => {
+                const productList = document.getElementById('productList');
+                productList.innerHTML = '';
+                products.forEach(product => {
+                    let li = document.createElement('li');
+
+                    let title = document.createElement('h3');
+                    title.textContent = product.name;
+                    li.appendChild(title);
+
+                    let description = document.createElement('p');
+                    description.textContent = product.description;
+                    li.appendChild(description);
+
+                    let price = document.createElement('p');
+                    price.textContent = `Precio: $${product.price}`;
+                    li.appendChild(price);
+
+                    let actions = document.createElement('div');
+                    actions.classList.add('product-actions');
+
+                    let buyButton = document.createElement('button');
+                    buyButton.textContent = 'Comprar';
+                    buyButton.onclick = () => buyProduct(product.id);
+                    actions.appendChild(buyButton);
+
+                    li.appendChild(actions);
+                    productList.appendChild(li);
+                });
+            });
+        }
+
+        function buyProduct(productId) {
+            alert("Producto comprado con ID: " + productId);
+        }
+
+        listProducts();
+    </script>
+
+</body>
+</html>

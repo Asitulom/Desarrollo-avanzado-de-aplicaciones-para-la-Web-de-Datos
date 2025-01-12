@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deusto Scooters - Página Principal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            width: 100%;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            margin-top: 20px;
+            font-size: 1.8em;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .form-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #ffffff;
+            max-width: 400px;  /* Limitar el ancho máximo */
+            margin: 20px auto;
+            padding-bottom: 40px; /* Espacio adicional en la parte inferior */
+        }
+
+        input {
+            margin: 10px 0;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            width: 100%;  /* Hacer que el botón ocupe todo el ancho */
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bienvenido a Deusto Scooters</h1>
+        <p>Tu solución de scooters urbanos</p>
+    </header>
+
+    <nav>
+        <a href="/static/index.html">Inicio</a>
+        <a href="/static/productos.html">Catálogo</a>
+        <a href="/static/pedidos.html">Mis Pedidos</a>
+    </nav>
+
+    <!-- Formulario de Inicio de Sesión -->
+    <div class="form-container" id="loginFormContainer">
+        <h2>Iniciar sesión</h2>
+        <form id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
+            <input type="password" id="loginPassword" placeholder="Contraseña" required>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+        <button id="showRegisterButton" style="margin-top: 10px;">Registro</button>
+    </div>
+
+    <!-- Formulario de Registro -->
+    <div class="form-container" id="registerFormContainer" style="display:none;">
+        <h2>Registrarse</h2>
+        <form id="registerForm">
+            <input type="text" id="registerUsername" placeholder="Nombre de usuario" required>
+            <input type="email" id="registerEmail" placeholder="Correo electrónico" required>
+            <input type="password" id="registerPassword" placeholder="Contraseña" required>
+            <button type="submit">Registrarme</button>
+        </form>
+        <button id="showLoginButton" style="margin-top: 10px;">Ya tienes cuenta? Iniciar sesión</button>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="container" id="mainContent" style="display:none;">
+        <h2>Gestiona tus scooters fácilmente</h2>
+        <p>Accede a nuestro catálogo de productos o consulta tus pedidos realizados.</p>
+
+        <div>
+            <a href="/static/productos.html" class="btn">Ver Catálogo</a>
+            <a href="/static/pedidos.html" class="btn">Ver Mis Pedidos</a>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2025 Deusto Scooters | Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        // Función para mostrar el contenido principal tras inicio de sesión
+        function showMainContent() {
+            document.getElementById('loginFormContainer').style.display = 'none';
+            document.getElementById('registerFormContainer').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        // Función para manejar el registro
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            fetch('/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, email, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Registro exitoso. Ahora puedes iniciar sesión.');
+                document.getElementById('registerFormContainer').style.display = 'none';
+                document.getElementById('loginFormContainer').style.display = 'block';
+            })
+            .catch(error => alert('Error en el registro'));
+        });
+
+        // Función para manejar el inicio de sesión
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            fetch('/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem('token', data.token);  // Guardar el token JWT
+                showMainContent();  // Mostrar el contenido principal
+            })
+            .catch(error => alert('Credenciales incorrectas'));
+        });
+
+        // Muestra el formulario de registro
+        document.getElementById('showRegisterButton').addEventListener('click', function() {
+            document.getElementById('loginFormContainer').style.display = 'none';
+            document.getElementById('registerFormContainer').style.display = 'block';
+        });
+
+        // Muestra el formulario de login
+        document.getElementById('showLoginButton').addEventListener('click', function() {
+            document.getElementById('registerFormContainer').style.display = 'none';
+            document.getElementById('loginFormContainer').style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>

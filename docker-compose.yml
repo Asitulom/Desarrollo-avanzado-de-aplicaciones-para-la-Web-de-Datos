@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  auth-microservice:
+    build: ./auth-microservice
+    ports:
+      - "8001:3000"
+    networks:
+      - app-network
+    environment:
+      - DB_HOST
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=deustoscooters
+    depends_on:
+      - mysql
+
+
+  catalog-microservice:
+    build: ./catalog-microservice
+    ports:
+      - "8002:8000"
+    networks:
+      - app-network
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=deustoscooters
+    depends_on:
+      - mysql
+
+  orders-microservice:
+    build: ./orders-microservice
+    ports:
+      - "8003:4000"
+    networks:
+      - app-network
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=deustoscooters
+    depends_on:
+      - mysql
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8000"
+    environment:
+      - CATALOG_SERVICE_URL=http://catalog-microservice:8000  
+      - AUTH_SERVICE_URL=http://auth-microservice:3000/api/user
+      - ORDERS_SERVICE_URL=http://orders-microservice:4000
+    networks:
+      - app-network
+    depends_on:
+      - orders-microservice
+      - auth-microservice
+      - catalog-microservice
+
+  mysql:
+    image: mysql:8.0 
+    container_name: deustoscooters_db
+    ports:
+      - "3307:3306"  
+    environment:
+      MYSQL_ROOT_PASSWORD: root 
+      MYSQL_DATABASE: deustoscooters 
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d
+      
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:

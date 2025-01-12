@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px; /* Botón más pequeño */
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #f4f4f9;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado -->
+    <header>
+        <h1>Deusto Scooters</h1>
+    </header>
+
+    <!-- Barra de navegación -->
+    <nav>
+        <a href="/static/index.html">Inicio</a>
+        <a href="/static/productos.html">Catálogo</a>
+        <a href="/static/pedidos.html">Mis Pedidos</a>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <h2>Mis Pedidos</h2>
+
+        <!-- Tabla para mostrar los pedidos -->
+        <table id="orderTable">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los pedidos se listarán aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2025 Deusto Scooters | Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        const PREFIX_URL = window.location.protocol + "//" + window.location.host;
+        const API_URL = PREFIX_URL + '/orders/';
+
+        function listOrders() {
+            fetch(API_URL, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(response => response.json())
+            .then(orders => {
+                const orderTable = document.getElementById('orderTable').getElementsByTagName('tbody')[0];
+                orderTable.innerHTML = '';  // Limpiar la tabla antes de agregar los nuevos pedidos
+                orders.forEach(order => {
+                    const row = orderTable.insertRow();
+
+                    let cellProduct = row.insertCell(0);
+                    cellProduct.textContent = order.product;
+
+                    let cellQuantity = row.insertCell(1);
+                    cellQuantity.textContent = order.quantity;
+
+                    let cellActions = row.insertCell(2);
+                    let deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Eliminar';
+                    deleteButton.onclick = () => deleteOrder(order.id);
+                    cellActions.appendChild(deleteButton);
+                });
+            });
+        }
+
+        function deleteOrder(orderId) {
+            fetch(API_URL + orderId, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(() => {
+                listOrders(); 
+            });
+        }
+
+        listOrders();
+    </script>
+
+</body>
+</html>
