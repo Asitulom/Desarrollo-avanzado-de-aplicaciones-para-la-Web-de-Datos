@@ -52,9 +52,9 @@
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             background-color: #ffffff;
-            max-width: 400px;  /* Limitar el ancho máximo */
+            max-width: 400px;  
             margin: 20px auto;
-            padding-bottom: 40px; /* Espacio adicional en la parte inferior */
+            padding-bottom: 40px;
         }
 
         .btn {
@@ -110,7 +110,7 @@
             border-radius: 5px;
             cursor: pointer;
             border: none;
-            width: 100%;  /* Hacer que el botón ocupe todo el ancho */
+            width: 100%;  
             margin-top: 10px;
             box-sizing: border-box;
         }
@@ -140,12 +140,10 @@
 </head>
 <body>
 
-    <!-- Encabezado -->
     <header>
         <h1>Deusto Scooters</h1>
     </header>
 
-    <!-- Barra de navegación -->
     <nav>
         <a href="/static/index.html">Inicio</a>
         <a href="/static/productos.html">Catálogo</a>
@@ -168,7 +166,7 @@
 
     <script>
         const PREFIX_URL = window.location.protocol + "//" + window.location.host;
-        const API_URL = PREFIX_URL + '/products/';
+        const API_URL = PREFIX_URL + '/catalog/products/';
 
         function listProducts() {
             fetch(API_URL)
@@ -206,8 +204,27 @@
         }
 
         function buyProduct(productId) {
-            alert("Producto comprado con ID: " + productId);
+            fetch(`${API_URL}${productId}/buy`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Error en la compra: " + response.statusText);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                alert(`Compra exitosa: ${data.product_name}`);
+                listProducts(); 
+            })
+            .catch((error) => {
+                alert("Error: " + error.message);
+            });
         }
+
 
         listProducts();
     </script>

@@ -93,19 +93,15 @@
 </head>
 <body>
 
-    <!-- Encabezado -->
     <header>
         <h1>Deusto Scooters</h1>
     </header>
 
-    <!-- Barra de navegación -->
     <nav>
         <a href="/static/index.html">Inicio</a>
         <a href="/static/productos.html">Catálogo</a>
         <a href="/static/pedidos.html">Mis Pedidos</a>
     </nav>
-
-    <!-- Contenido principal -->
     <div class="container">
         <h2>Mis Pedidos</h2>
 
@@ -119,7 +115,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Los pedidos se listarán aquí -->
+                <!-- Los pedidos se listan aquí -->
             </tbody>
         </table>
     </div>
@@ -131,7 +127,7 @@
 
     <script>
         const PREFIX_URL = window.location.protocol + "//" + window.location.host;
-        const API_URL = PREFIX_URL + '/orders/';
+        const API_URL = PREFIX_URL + '/pedidos/';
 
         function listOrders() {
             fetch(API_URL, {
@@ -142,7 +138,7 @@
             .then(response => response.json())
             .then(orders => {
                 const orderTable = document.getElementById('orderTable').getElementsByTagName('tbody')[0];
-                orderTable.innerHTML = '';  // Limpiar la tabla antes de agregar los nuevos pedidos
+                orderTable.innerHTML = '';  
                 orders.forEach(order => {
                     const row = orderTable.insertRow();
 

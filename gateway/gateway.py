@@ -4,9 +4,9 @@ import httpx
 app = FastAPI()
 
 # Define the microservices URLs
-AUTH_SERVICE_URL = "http://localhost:3000"  # El microservicio de autenticación
-CATALOG_SERVICE_URL = "http://localhost:4001"  # El microservicio de catálogo
-ORDERS_SERVICE_URL = "http://localhost:4000"  # El microservicio de pedidos
+AUTH_SERVICE_URL = "http://localhost:3000"  
+CATALOG_SERVICE_URL = "http://localhost:8000" 
+ORDERS_SERVICE_URL = "http://localhost:4000"
 
 # HTTP Client
 client = httpx.Client()
@@ -29,16 +29,14 @@ async def orders_service_proxy(path: str, request: Request):
 # Función para redirigir las solicitudes al microservicio correspondiente
 async def proxy_request(request: Request, service_url: str):
     method = request.method
-    url = f"{service_url}/{request.url.path}"  # Generamos la URL completa
+    url = f"{service_url}/{request.url.path}"  
     headers = dict(request.headers)
     content = await request.body()
 
     try:
-        # Realizamos la solicitud HTTP al microservicio
         response = await client.request(method, url, headers=headers, content=content)
         return response.content, response.status_code, response.headers.items()
     except httpx.HTTPError as exc:
-        # En caso de error, devolvemos un mensaje con el error
         raise HTTPException(status_code=500, detail=str(exc))
 
 if __name__ == "__main__":

@@ -13,7 +13,12 @@ class Product(BaseModel):
     available: bool
 
 # Base de datos en memoria (temporal)
-products: List[Product] = []
+products: List[Product] = [
+    Product(id=1, name="Scooter Pro 3000", description="Scooter eléctrico avanzado", price=299.99, available=True),
+    Product(id=2, name="EcoScooter X", description="Scooter ecológico y compacto", price=199.99, available=True),
+    Product(id=3, name="Speedster 500", description="Scooter de alta velocidad", price=399.99, available=False),
+]
+
 
 @app.get("/products/", response_model=List[Product])
 def get_products():
@@ -51,3 +56,15 @@ def delete_product(product_id: int):
     global products
     products = [p for p in products if p.id != product_id]
     return {"message": "Product deleted successfully"}
+
+@app.post("/products/{product_id}/buy")
+def buy_product(product_id: int):
+    """Comprar un producto"""
+    product = next((p for p in products if p.id == product_id), None)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    if not product.available:
+        raise HTTPException(status_code=400, detail="Product is not available for purchase")
+    
+    product.available = False
+    return {"message": "Purchase successful", "product_id": product_id, "product_name": product.name}
